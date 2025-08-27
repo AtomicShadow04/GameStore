@@ -1,0 +1,102 @@
+﻿@page "/edit-game"
+@page "/edit-game/{id:int}"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager NavigationManager
+@inject GamesClient GamesClient
+@inject GenreClient GenreClient
+<PageTitle>New Game</PageTitle>
+<h3>@title</h3>
+@if (genres is null || game is null)
+{
+    <p>Loading genres...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@game" FormName="editgame" OnValidSubmit="HandleSubmit" Enhance>
+                <DataAnnotationsValidator />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name: </label>
+                    <InputText class="form-control" id="name" @bind-Value="game.Name" />
+                    <ValidationMessage For="@(() => game.Name)" />
+                </div>
+                <div class="mb-3">
+                    <label for="genre" class="form-label">Genre: </label>
+                    <InputSelect class="form-select" id="genre" @bind-Value="game.GenreId">
+                        <option value="">Select a genre</option>
+                        @if (genres != null)
+                        {
+                            foreach (var genre in genres)
+                            {
+                                <option value="@genre.Id">@genre.Name</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => game.GenreId)" />
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price: </label>
+                    <InputNumber class="form-control" id="price" @bind-Value="game.Price" />
+                    <ValidationMessage For="@(() => game.Price)" />
+                </div>
+                <div class="mb-3">
+                    <label for="releaseDate" class="form-label">Release Date: </label>
+                    <InputDate class="form-control" id="releaseDate" @bind-Value="game.ReleaseDate" />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a type="button" class="btn btn-secondary" href="/">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    [SupplyParameterFromForm]
+
+    private GameDetails? game { get; set; }
+
+    private Genre[]? genres;
+    private string title = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Id is not null)
+        {
+            game = GamesClient.GetGame(Id.Value);
+            title = $"Edit Game - {game.Name}";
+        }
+        else
+        {
+            game = new()
+            {
+                Name = "",
+                ReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow),
+            };
+            title = "New Game";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        genres = GenreClient.GetGenres();
+    }
+
+    private void HandleSubmit()
+    {
+        ArgumentNullException.ThrowIfNull(game);
+        if (Id is not null)
+        {
+            game.Id = Id.Value;
+            GamesClient.UpdateGame(game);
+        }
+        else
+        {
+            GamesClient.AddGame(game);
+        }
+        NavigationManager.NavigateTo("/");
+
+    }
+}

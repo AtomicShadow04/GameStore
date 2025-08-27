@@ -1,0 +1,57 @@
+﻿@page "/"
+@inject GamesClient Client
+
+<PageTitle>Game Catalogue</PageTitle>
+<div class="mt-2">
+    <NavLink class="btn btn-primary" href="/edit-game">Create New Game</NavLink>
+</div>
+@if (games is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-bordered table-hover mt-3">
+        <thead class="table-dark">
+            <th>Id</th>
+            <th>Game Name</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Release Date</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            @foreach (var game in games)
+            {
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Name</td>
+                    <td>@game.Genre</td>
+                    <td class="text-end">@game.Price.ToString("C2")</td>
+                    <td>@game.ReleaseDate</td>
+                    <td>
+                        <a class="btn btn-primary" href="@GetGameEditUrl(game.Id)"><i class="bi bi-pencil-square"></i></a>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="@GetDeleteModalId(game)"><i
+                                class="bi bi-trash"></i></button>
+                    </td>
+                    <DeleteGame Game="@game" />
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    private GameSummary[]? games;
+
+    protected override void OnInitialized()
+    {
+        games = Client.GetGames();
+    }
+    private static string GetGameEditUrl(int id) => $"/edit-game/{id}";
+
+    private string GetDeleteModalId(GameSummary game)
+    {
+        return $"#{DeleteGame.GetModalId(game)}";
+    }
+}
