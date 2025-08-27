@@ -41,6 +41,6 @@
     {
         ArgumentNullException.ThrowIfNull(Game);
         await Client.DeleteGame(Game.Id);
-        NavigationManager.Refresh();
+        NavigationManager.NavigateTo("/", true); // Force reload of the home page
     }
 }
