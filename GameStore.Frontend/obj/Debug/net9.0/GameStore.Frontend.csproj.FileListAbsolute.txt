@@ -31,3 +31,4 @@ C:\.NET\GameStore\Gamestore.Frontend\obj\Debug\net9.0\refint\GameStore.Frontend.
 C:\.NET\GameStore\Gamestore.Frontend\obj\Debug\net9.0\GameStore.Frontend.pdb
 C:\.NET\GameStore\Gamestore.Frontend\obj\Debug\net9.0\GameStore.Frontend.genruntimeconfig.cache
 C:\.NET\GameStore\Gamestore.Frontend\obj\Debug\net9.0\ref\GameStore.Frontend.dll
+c:\.NET\GameStore\GameStore.Frontend\obj\Debug\net9.0\GameStore.Frontend.sourcelink.json

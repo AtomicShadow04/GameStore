@@ -34,13 +34,13 @@
     public static string GetModalId(GameSummary game)
     {
         ArgumentNullException.ThrowIfNull(game);
-        return $"delete-game-{game}";
+        return $"delete-game-{game.Id}";
     }
 
-    public void ConfirmDelete()
+    public async Task ConfirmDelete()
     {
         ArgumentNullException.ThrowIfNull(Game);
-        Client.DeleteGame(Game.Id);
+        await Client.DeleteGame(Game.Id);
         NavigationManager.Refresh();
     }
 }
